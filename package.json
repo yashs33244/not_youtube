@@ -6,7 +6,7 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "start-videoProcessingService": "cd ./apps/videoProcessingService && npm run start"
+    "start-videoProcessingService": "cd ./apps/videoProcessingService && npm run build && npm run serve"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
