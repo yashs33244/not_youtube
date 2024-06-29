@@ -1,29 +1,47 @@
-FROM node:20
 
-# Set the working directory
-WORKDIR /usr/src/app
+
+#STAGE 1: Build the application
+
+# Use the official Node.js 20 image as the base image
+FROM node:18 AS builder
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# copy the package.json and package-lock.json files 
+COPY package*.json ./
+
+# install the dependencies  
+RUN npm install
+
+# copy the source code inside the docker image
+COPY . .    
+
+# build the application
+RUN npm run build
+
+
+#STAGE 2: production stage
+
+FROM node:18
 
 # Install ffmpeg
 RUN apt-get update && apt-get install -y ffmpeg
 
-# Copy root package.json and lockfile
-COPY package.json ./
-COPY package-lock.json ./
+# Set the working directory inside the container
+WORKDIR /app
 
-# Copy the api package.json
-COPY apps/videoProcessingService/package.json ./apps/videoProcessingService/package.json
+# copy the package.json and package-lock.json files 
+COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# install only production dependencies
+RUN npm install --only=production
 
-# Copy app source
-COPY . .
+# copy the build folder from the previous stage 
+COPY --from=builder /app/dist ./dist
 
-# Ensure the application listens on port 8080
-ENV PORT 8080
+# expose the port
+EXPOSE 3000
 
-# Expose the port the app runs on
-EXPOSE 8080
-
-# Start the application
-CMD [ "npm", "run", "start-videoProcessingService" ]
+# start the application 
+CMD [ "npm", "run", "serve"]
