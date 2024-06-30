@@ -21,6 +21,13 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts", // Include Next.js environment definitions
+    "**/*.ts",       // Include all .ts files
+    "**/*.tsx",      // Include all .tsx files
+    ".next/types/**/*.ts" // Include Next.js types
+  ],
+  "exclude": [
+    "node_modules" // Exclude node_modules
+  ]
 }
