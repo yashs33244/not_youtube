@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "video-processing-service",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "start": "ts-node src/index.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
-    "start-app":"npm run build && npm run serve"  
+    "start-app": "npm run build && npm run serve"
   },
   "keywords": [],
   "author": "",

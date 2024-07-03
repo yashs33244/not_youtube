@@ -6,8 +6,8 @@ import Ffmpeg from 'fluent-ffmpeg';
 
 const storage = new Storage();  
 
-const rawVideoBucketName = "yash_yt_raw_videos";    // must be unique globally  
-const processedVideoBucketName = "yash_yt_processed_videos";    // must be unique globally  
+const rawVideoBucketName = "ys324-raw-videos";    // must be unique globally  
+const processedVideoBucketName = "ys324-processed-videos";    // must be unique globally  
 
 const localRawVideoPath = "./raw-videos";  
 const localProcessedVideoPath = "./processed-videos";      
@@ -31,13 +31,13 @@ export function convertVideo(rawVideoName:String, processedVideoName:String){
     const outputFilePath = `${localProcessedVideoPath}/${processedVideoName}`;  
     return new Promise<void>((resolve, reject)=>{
         Ffmpeg(inputFilePath)
-        .outputOptions("-vf", "scale=-2:360") // 360p
+        .outputOptions("-vf", "scale=-1:360") // 360p
         .on("end", ()=>{        
             console.log("Video processing completed");
             resolve();
         })   
         .on("error", (err)=>{
-            console.log("Video processing failed internal server error");
+            console.log(`An error occurred: ${err.message}`);
             reject(err);
         })
         .save(outputFilePath);
@@ -89,7 +89,7 @@ export async function uploadProcessedVideo(filename:string){
  */ 
 
 function deleteFile(filePath:string):Promise<void>{
-    return new Promise<void>((resolve, reject)=>{  
+    return new Promise((resolve, reject)=>{  
         if(fs.existsSync(filePath)){
             fs.unlink(filePath, (err)=>{
                 if(err){
@@ -101,7 +101,7 @@ function deleteFile(filePath:string):Promise<void>{
                 }
             })
         }else{
-            console.log("File does not exist");
+            console.log(`File does not exist at ${filePath}`);
             resolve();  
         }
      })
