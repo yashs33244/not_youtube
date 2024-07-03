@@ -9,7 +9,7 @@ initializeApp();
 const firestore = new Firestore();
 const storage = new Storage();
 
-const rawVideoBucketName = "yash_yt_raw_videos"; // must be unique globally
+const rawVideoBucketName = "ys324-raw-videos"; // must be unique globally
 
 export const createUser = functions.auth.user().onCreate((user)=>{
   const userInfo = {

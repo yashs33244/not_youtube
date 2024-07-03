@@ -12,12 +12,12 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAgQdKkJ-RNDYmwkm2GSCBNzgPgOGMJ_so",
-  authDomain: "not-f27bd.firebaseapp.com",
-  projectId: "not-f27bd",
+  apiKey: "AIzaSyAOFtinU7pxeTqLtHSp1a7OSL-kEwPRIME",
+  authDomain: "yt-clone-e70d3.firebaseapp.com",
+  projectId: "yt-clone-e70d3",
   // storageBucket: "not-f27bd.appspot.com",
   // messagingSenderId: "91976732163",
-  appId: "1:91976732163:web:91e7132732b92a90d94836"
+  appId: "1:335504479831:web:446dee7ed124b836dc7512"
 };
 
 // Initialize Firebase
@@ -30,8 +30,8 @@ const auth = getAuth(app);
  * @return Promise<User | null>
  */
 
-export function signInWithGoogle(){
-    return signInWithPopup(auth, new GoogleAuthProvider())  
+export async function signInWithGoogle(){
+    return await signInWithPopup(auth, new GoogleAuthProvider());  
 }
 
 /**
