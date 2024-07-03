@@ -1,5 +1,6 @@
 import express  from "express";
 import { convertVideo, deleteProcessedVideo,deleteRawVideo, downloadRawVideo, setupDirectories, uploadProcessedVideo } from "./storage";
+import { isVideoNew, setVideo } from "./firestore";
 
 setupDirectories();
 
@@ -21,8 +22,23 @@ app.post("/process-video", async (req, res)=>{
     }
 
     const inputFileName = data.name;    
-    const outputFilePath = `processed-${inputFileName}`;   
+    const outputFilePath = `processed-${inputFileName}`;   // it is outputfilename not path
+    const videoId = inputFileName.split('.')[0];
     
+    if(!isVideoNew(videoId)){
+        return res.status(400).send("Bad request: Video has already been processed");
+    }else{
+        await setVideo(
+            videoId,
+            {
+                id: videoId,
+                uid: videoId.split('-')[0], 
+                status: 'processing',
+            }
+        )
+    }
+
+
     // download the raw video from tha cloud
     await downloadRawVideo(inputFileName);
     // first process then upload
@@ -38,6 +54,15 @@ app.post("/process-video", async (req, res)=>{
     }
     // upload the processed video to the cloud  
     await uploadProcessedVideo(outputFilePath);
+
+    // update the firestore document
+    await setVideo(
+        videoId,
+        {
+            status: 'processed',
+            filename: outputFilePath,
+        }
+    );
 
     await Promise.all([
         deleteRawVideo(inputFileName),
