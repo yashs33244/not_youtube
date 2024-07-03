@@ -1,6 +1,6 @@
 import { Storage } from '@google-cloud/storage';
 import fs from 'fs';    
-import Ffmpeg from 'fluent-ffmpeg';
+import ffmpeg from 'fluent-ffmpeg';
 
 
 
@@ -24,13 +24,10 @@ export function setupDirectories(){
 
 
 export function convertVideo(rawVideoName:String, processedVideoName:String){
-
     // this function is not returning anything 
     // so we wrap it in a promise to return the path of the processed video
-    const inputFilePath = `${localRawVideoPath}/${rawVideoName}`;   
-    const outputFilePath = `${localProcessedVideoPath}/${processedVideoName}`;  
     return new Promise<void>((resolve, reject)=>{
-        Ffmpeg(inputFilePath)
+        ffmpeg(`${localRawVideoPath}/${rawVideoName}`)
         .outputOptions("-vf", "scale=-1:360") // 360p
         .on("end", ()=>{        
             console.log("Video processing completed");
@@ -40,7 +37,7 @@ export function convertVideo(rawVideoName:String, processedVideoName:String){
             console.log(`An error occurred: ${err.message}`);
             reject(err);
         })
-        .save(outputFilePath);
+        .save(`${localProcessedVideoPath}/${processedVideoName}`);
     })      
 }
 
