@@ -23,14 +23,17 @@ async function getVideo(videoId:string){
     return (snapshot.data() as Video) ?? {};
 }
 
-export function setVideo(videoId:string,video:Video){
+export function setVideo(videoId: string, video: Video) {
+    console.log(`Setting video with ID: ${videoId}`);
     return firestore
         .collection(videoCollectionId)
         .doc(videoId)
-        .set(video, {merge: true});    
+        .set(video, { merge: true });
 }
 
-export async function isVideoNew(videoId:string){
-    const video = await getVideo(videoId);  
-    return video?.status === undefined; 
+export async function isVideoNew(videoId: string) {
+    const video = await getVideo(videoId);
+    const isNew = video?.status === undefined;
+    console.log(`Is video new: ${isNew}, for video ID: ${videoId}`);
+    return isNew;
 }

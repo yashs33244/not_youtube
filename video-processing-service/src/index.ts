@@ -7,37 +7,38 @@ setupDirectories();
 const app = express();
 app.use(express.json());    
 
-app.post("/process-video", async (req, res)=>{
-    // get the bucket name from the cloud pub/sub message   
+app.post("/process-video", async (req, res) => {
+    console.log("Processing video request received");
     let data;
-    try{
-        const message = Buffer.from(req.body.message.data, 'base64').toString('utf-8'); 
+    try {
+        const message = Buffer.from(req.body.message.data, 'base64').toString('utf-8');
         data = JSON.parse(message);
-        if(!data.name){
-            throw new Error("Invalid message payload is recieved"); 
-        }   
-    }catch(error){
+        if (!data.name) {
+            throw new Error("Invalid message payload received");
+        }
+    } catch (error) {
         console.error(error);
-        return res.status(400).send("Bad request: missing filename");    
+        return res.status(400).send("Bad request: missing filename");
     }
 
-    const inputFileName = data.name;    
-    const outputFilePath = `processed-${inputFileName}`;   // it is outputfilename not path
+    const inputFileName = data.name;
+    const outputFilePath = `processed-${inputFileName}`;
     const videoId = inputFileName.split('.')[0];
-    
-    if(!isVideoNew(videoId)){
+
+    console.log(`Processing video ID: ${videoId}`);
+
+    if (!isVideoNew(videoId)) {
         return res.status(400).send("Bad request: Video has already been processed");
-    }else{
+    } else {
         await setVideo(
             videoId,
             {
                 id: videoId,
-                uid: videoId.split('-')[0], 
+                uid: videoId.split('-')[0],
                 status: 'processing',
             }
-        )
+        );
     }
-
 
     // download the raw video from tha cloud
     await downloadRawVideo(inputFileName);
